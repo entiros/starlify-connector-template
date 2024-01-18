@@ -1,4 +1,4 @@
-package se.entiros.starlify.connector.api.impl;
+package se.entiros.starlify.connector.mule.api;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import se.entiros.starlify.connector.api.MuleApi;
-import se.entiros.starlify.connector.model.mule.Asset;
-import se.entiros.starlify.connector.model.mule.UserProfile;
+import se.entiros.starlify.connector.mule.model.Asset;
+import se.entiros.starlify.connector.mule.model.UserProfile;
 
 @Service
 @RequiredArgsConstructor
@@ -23,21 +22,26 @@ public class MuleApiImpl implements MuleApi {
   private String muleUrl;
 
   @Override
-  public List<Asset> getAssetList(String accessToken) {
-    var userProfile =
-        restTemplate
-            .exchange(
-                muleUrl + "/accounts/api/me",
-                HttpMethod.GET,
-                new HttpEntity<>(null, toHeaders(accessToken)),
-                new ParameterizedTypeReference<UserProfile>() {})
-            .getBody();
+  public UserProfile getUserProfile(String muleAccessToken) {
+    return restTemplate
+        .exchange(
+            muleUrl + "/accounts/api/me",
+            HttpMethod.GET,
+            new HttpEntity<>(null, toHeaders(muleAccessToken)),
+            new ParameterizedTypeReference<UserProfile>() {})
+        .getBody();
+  }
 
-    if (userProfile == null) {
-      throw new RuntimeException("User profile not found");
-    }
-
-    return getAssets(accessToken, userProfile.getUser().getOrganizationId());
+  @Override
+  public List<Asset> getAssets(String muleAccessToken, String orgId) {
+    return restTemplate
+        .exchange(
+            muleUrl + "/exchange/api/v2/assets/search?masterOrganizationId={orgId}",
+            HttpMethod.GET,
+            new HttpEntity<>(null, toHeaders(muleAccessToken)),
+            new ParameterizedTypeReference<List<Asset>>() {},
+            orgId)
+        .getBody();
   }
 
   @Override
@@ -53,17 +57,6 @@ public class MuleApiImpl implements MuleApi {
             groupId,
             assetId,
             version)
-        .getBody();
-  }
-
-  private List<Asset> getAssets(String accessToken, String orgId) {
-    return restTemplate
-        .exchange(
-            muleUrl + "/exchange/api/v2/assets/search?masterOrganizationId={orgId}",
-            HttpMethod.GET,
-            new HttpEntity<>(null, toHeaders(accessToken)),
-            new ParameterizedTypeReference<List<Asset>>() {},
-            orgId)
         .getBody();
   }
 

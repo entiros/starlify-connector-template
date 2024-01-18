@@ -1,6 +1,6 @@
-package se.entiros.starlify.connector.api;
+package se.entiros.starlify.connector.starlify.api;
 
-import se.entiros.starlify.connector.model.starlify.System;
+import se.entiros.starlify.connector.starlify.model.System;
 
 public interface StarlifyApi {
   System createSystem(String starlifyApiKey, System system);

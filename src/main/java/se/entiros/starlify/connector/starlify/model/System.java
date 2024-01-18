@@ -1,12 +1,12 @@
-package se.entiros.starlify.connector.model.starlify;
+package se.entiros.starlify.connector.starlify.model;
 
 import java.util.UUID;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class System extends Named {
+public class System {
+  private String id;
+  private String name;
   private String description;
   private Network network;
 

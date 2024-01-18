@@ -1,43 +1,45 @@
-package se.entiros.starlify.connector.service;
+package se.entiros.starlify.connector.mule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import se.entiros.starlify.connector.api.MuleApi;
-import se.entiros.starlify.connector.api.StarlifyApi;
-import se.entiros.starlify.connector.model.mule.Asset;
-import se.entiros.starlify.connector.model.mule.MuleImportRequest;
-import se.entiros.starlify.connector.model.starlify.System;
+import se.entiros.starlify.connector.mule.api.MuleApi;
+import se.entiros.starlify.connector.mule.model.Asset;
+import se.entiros.starlify.connector.mule.model.MuleImportRequest;
+import se.entiros.starlify.connector.starlify.api.StarlifyApi;
+import se.entiros.starlify.connector.starlify.model.System;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MuleConnectorImpl implements StarlifyConnector<MuleImportRequest> {
+public class MuleConnector {
 
   private final MuleApi muleApi;
   private final StarlifyApi starlifyApi;
 
-  @Override
-  public void importDataIntoStarlify(MuleImportRequest request) {
+  public void importDataToStarlify(MuleImportRequest request) {
+    String organizationId =
+        muleApi.getUserProfile(request.getMuleAccessToken()).getUser().getOrganization().getId();
+
     muleApi
-        .getAssetList(request.getApiKey())
+        .getAssets(request.getMuleAccessToken(), organizationId)
         .forEach(asset -> importAssetIntoStarlify(request, asset));
   }
 
   private void importAssetIntoStarlify(MuleImportRequest request, Asset asset) {
     try {
-      log.info("Processing asset <{}>", asset);
+      log.info("Importing asset <{}>", asset);
 
       String systemId =
           starlifyApi
               .createSystem(
-                  request.getStarlifyKey(),
+                  request.getStarlifyApiKey(),
                   System.from(request.getNetworkId(), asset.getName(), asset.getDescription()))
               .getId();
 
       String ramlApiDefinition =
           muleApi.getRaml(
-              request.getApiKey(),
+              request.getMuleAccessToken(),
               asset.getVersionGroup(),
               asset.getGroupId(),
               asset.getAssetId(),
@@ -45,9 +47,9 @@ public class MuleConnectorImpl implements StarlifyConnector<MuleImportRequest> {
       String ramlFileName = asset.getAssetId() + ".raml";
 
       starlifyApi.createServices(
-          request.getStarlifyKey(), systemId, ramlFileName, ramlApiDefinition);
+          request.getStarlifyApiKey(), systemId, ramlFileName, ramlApiDefinition);
     } catch (Throwable throwable) {
-      log.error("Error while processing asset <{}>", asset.getName(), throwable);
+      log.error("Failed to import asset <{}>", asset.getName(), throwable);
     }
   }
 }

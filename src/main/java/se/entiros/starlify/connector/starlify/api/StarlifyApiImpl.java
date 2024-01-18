@@ -1,4 +1,4 @@
-package se.entiros.starlify.connector.api.impl;
+package se.entiros.starlify.connector.starlify.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import se.entiros.starlify.connector.api.StarlifyApi;
-import se.entiros.starlify.connector.model.starlify.System;
+import se.entiros.starlify.connector.starlify.model.System;
 
 @Service
 @RequiredArgsConstructor

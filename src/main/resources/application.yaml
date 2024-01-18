@@ -6,4 +6,4 @@ mulesoft:
     url: https://anypoint.mulesoft.com
 
 starlify:
-  url: https://api.starlify.com
+  url: https://dev-api-starlify.private.entiros.io

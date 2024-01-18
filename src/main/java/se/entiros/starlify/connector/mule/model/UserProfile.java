@@ -1,4 +1,4 @@
-package se.entiros.starlify.connector.model.mule;
+package se.entiros.starlify.connector.mule.model;
 
 import lombok.Data;
 
