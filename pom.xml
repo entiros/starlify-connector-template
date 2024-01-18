@@ -13,9 +13,10 @@
   <artifactId>starlify-connector</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>starlify-connector</name>
-  <description>Demo project for Spring Boot</description>
+  <description>Connect Starlify with an external data source</description>
   <properties>
     <java.version>21</java.version>
+    <camel.version>2.25.0</camel.version>
   </properties>
   <dependencies>
     <dependency>

@@ -1,2 +1,9 @@
 server:
   port: 8082
+
+mulesoft:
+  server:
+    url: https://anypoint.mulesoft.com
+
+starlify:
+  url: https://api.starlify.com
