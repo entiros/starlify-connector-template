@@ -2,11 +2,11 @@ package se.entiros.starlify.connector.starlify.model;
 
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class System {
-  private String id;
-  private String name;
+@EqualsAndHashCode(callSuper = true)
+public class System extends Named {
   private String description;
   private Network network;
 
