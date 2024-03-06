@@ -1,9 +1,11 @@
 # Starlify connector
-## Description
-This is a template project for building your own custom Starlify connector. The connector can then be used with Starlify to automatically import systems, services and references from your chosen data source directly into a Starlify network.
 
-## Dependencies
-TODO
+## Description
+This is a template project for building your own custom Starlify connector. 
+
+A Starlify Connector is a Spring Boot server application that exposes HTTP endpoints that can be used to trigger data synchronization between Starlify (www.starlify.com) and external data sources. It starts an import job when an HTTP endpoint is called with an API key and a network ID, whereupon it imports systems, services and references from an external data source which exposes this data via the implementation of the StarlifyConnectorPlugin interface.
+
+It requires Java 21.
 
 ## Usage
 To start using a custom connector in Starlify you will have to follow these steps:
@@ -29,12 +31,17 @@ To start using a custom connector in Starlify you will have to follow these step
 9. In Starlify, click `Verify` to ensure that your connector is set up correctly. 
 
 ### Import data from the connector to Starlify
+
+#### Trigger import from inside Starlify
 1. In Starlify, go to the `External Connections` page.
 2. In the list of Agents, select the connector you want to import data from.
 3. Select the network that the data should be imported into.
 4. Click `Sync import`. Starlify will call the connector to start the import process. The connector will extract data from the external data source and send the data to Starlify.
 5. Click the refresh button in the `Import history` to see the status of import jobs.
 6. If any errors occur during the import, check the connector's logs for more information.
+
+#### Trigger import manually
+TODO manual instructions
 
 ## Building and testing your connector
 This template uses the Starlify Connector SDK as a dependency. The SDK provides all the basic essentials for building a custom connector. It sets up a server with an endpoint that will listen for REST calls from Starlify. This endpoint will then call methods in the connector to get systems, services and references. These methods are defined in the StarlifyConnectorPlugin interface, and an implementation of them must be added to the StarlifyConnectorPluginImpl class. The class is already created in the template, but the three methods have placeholder code that should be replaced with your code. Your code should fetch the systems, services and references from your data source and return them as lists of StarlifySystem, StarlifyService and StarlifyReference objects.
