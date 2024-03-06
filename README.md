@@ -9,7 +9,7 @@ TODO
 To start using a custom connector in Starlify you will have to follow these steps:
 
 ### Prepare the connector
-1. Clone the connector template repository: `git clone https://github.com/entiros/starlify-connector-skeleton.git`
+1. Clone the connector template repository: `git clone https://github.com/entiros/starlify-connector-template.git`
 2. Implement the methods in the StarlifyConnectorPluginImpl class to retrieve systems, services and references from your data source. See the [Building and testing your connector](#building-and-testing-your-connector) section for more information.
 3. Build the project, either using maven: `mvn clean install`.
    - If you have maven installed: `mvn clean install`
