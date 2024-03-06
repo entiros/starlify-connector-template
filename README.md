@@ -11,15 +11,18 @@ It requires Java 21.
 To start using a custom connector in Starlify you will have to follow these steps:
 
 ### Prepare the connector
-1. Clone the connector template repository: `git clone https://github.com/entiros/starlify-connector-skeleton.git`
+
+1. Clone the connector template repository: `git clone https://github.com/entiros/starlify-connector-template.git`
 2. Implement the methods in the StarlifyConnectorPluginImpl class to retrieve systems, services and references from your data source. See the [Building and testing your connector](#building-and-testing-your-connector) section for more information.
 3. Build the project, either using maven: `mvn clean install`.
    - If you have maven installed: `mvn clean install`
    - If you don't have maven installed, you can use the Maven Wrapper script:
      - On Unix/Mac OS: `./mvnw clean install`
      - On Windows: `mvnw.cmd clean install`
+4. Start the connector by running `mvn spring-boot:run` in the project directory.
 
 ### Create an external connection in Starlify
+
 1. In Starlify, go to the `External Connections` page.
 2. Click `Create external connection`.
 3. When prompted to select connector type, choose `Custom connector`.
@@ -28,7 +31,7 @@ To start using a custom connector in Starlify you will have to follow these step
 6. Click the 'next' arrow. The connection will be created. In the next tab you will see the connector information and the API key. Copy the API key and store it somewhere safe, you will not be able to see it again once you close the window.
 7. In your connector's `src/resources/application.yaml` file, replace the `starlify-api.api-key` value with the API key you just copied.
 8. Start the connector by running `mvn spring-boot:run` in the project directory.
-9. In Starlify, click `Verify` to ensure that your connector is set up correctly. 
+9. In Starlify, click `Verify` to ensure that your connector is set up correctly.
 
 ### Import data from the connector to Starlify
 
@@ -72,103 +75,104 @@ When you are building the connector and implementing the required methods, you m
 2. Remove the starlify-api.api-key value from the `application.yaml` file.
 3. Add the property starlify-api.testing with the value set to `true` in the `application.yaml` file.
 
-When the connector is started in test mode, it will not connect to Starlify, and the connector will not require an API key. This allows you to test the connector without connecting it to Starlify.
-When the import endpoint is called, the connector will log the data that would have been sent to Starlify if the connector was connected to Starlify. This allows you to verify that the connector es extracting data from the external data source correctly, and that the data is being converted to StarlifySystems, StarlifyServices and StarlifyReferences correctly.
+- Keep the value starlify-api.api-key in the `application.yaml` file set to `INSERT_API_KEY_HERE.
+- Remove the starlify-api.api-key value from the `application.yaml` file.
+- Add the property starlify-api.testing with the value set to `true` in the `application.yaml` file.
+
+When the connector is started in test mode, it will not connect to Starlify, and the connector will not reqbent to Starlify. This allows you to verify that the connector is extracting data from the external data source correctly, and that the data is being converted to StarlifySystems, StarlifyServices and StarlifyReferences correctly. To call the connector you can use for example Postman with a POST request to the URL <locationOfServer:port>/connector/networks/{networkId}/import, where the networkId needs to be replaced with a valid UUID, for example 853c2d40-e738-4196-a199-33f2c6225fa0. A header "X-API-KEY" is also needed, the value can empty.
 
 ### Models
 
 1. **`Identifiable`**
 
-    - Description: This class represents an identifiable entity in the Starlify connector.
-    - Usage: The `Identifiable` class is used to create objects with a unique external identifier. It should be used in specific cases where the type of the object is not known. For example, it can be used as a target in a `StarlifyReference` object, where the target could be either a `StarlifyService` or a `StarlifyEndpoint`.
+   - Description: This class represents an identifiable entity in the Starlify connector.
+   - Usage: The `Identifiable` class is used to create objects with a unique external identifier. It should be used in specific cases where the type of the object is not known. For example, it can be used as a target in a `StarlifyReference` object, where the target could be either a `StarlifyService` or a `StarlifyEndpoint`.
 
-    - Example instantiation:
+   - Example instantiation:
 
-      ```java
-      import com.starlify.connector.model.Identifiable;
- 
-      // Example instantiation of Identifiable
-      Identifiable identifiable = Identifiable.builder()
-          .externalId("exampleExternalId")
-          .build();
-      ```
+     ```java
+     import com.starlify.connector.model.Identifiable;
+
+     // Example instantiation of Identifiable
+     Identifiable identifiable = Identifiable.builder()
+         .externalId("exampleExternalId")
+         .build();
+     ```
 
 2. **`StarlifySystem`**
 
-    - Description: This model represents a system in Starlify.
-    - Usage: The `StarlifySystem` model is used to create systems with the following attributes:
+   - Description: This model represents a system in Starlify.
+   - Usage: The `StarlifySystem` model is used to create systems with the following attributes:
 
-        - `externalId`: The external identifier for the system. This should be something **unique** and **deterministic** that can identify the specified system from the external data source.
-        - `name`: The name of the system. The name should be unique among the other systems in a network.
-        - `description`: A description of the system.
+     - `externalId`: The external identifier for the system. This should be something **unique** and **deterministic** that can identify the specified system from the external data source.
+     - `name`: The name of the system. The name should be unique among the other systems in a network.
+     - `description`: A description of the system.
 
-    - Example instantiation:
+   - Example instantiation:
 
-      ```java
-      import com.starlify.connector.model.StarlifySystem;
- 
-      // Example instantiation of a StarlifySystem
-      StarlifySystem system = StarlifySystem.builder()
-          .externalId("exampleSystemExternalId")
-          .name("Example System")
-          .description("Example system description")
-          .build();
-      ```
+     ```java
+     import com.starlify.connector.model.StarlifySystem;
+
+     // Example instantiation of a StarlifySystem
+     StarlifySystem system = StarlifySystem.builder()
+         .externalId("exampleSystemExternalId")
+         .name("Example System")
+         .description("Example system description")
+         .build();
+     ```
 
 3. **`StarlifyService`**
 
-    - Description: This model represents a service in Starlify.
-    - Usage: The `StarlifyService` model is used to create services with the following attributes:
+   - Description: This model represents a service in Starlify.
+   - Usage: The `StarlifyService` model is used to create services with the following attributes:
 
-        - `externalId`: The external identifier for the service. This should be something **unique** and **deterministic** that can identify the specified service from the external data source.
-        - `name`: The name of the service. The name should be unique among the other services with the same `StarlifySystem` as provider.
-        - `providerExternalId`: The external identifier of the service's provider. This should be the externalId of the `StarlifySystem` that provides the service.
-        - `description`: A description of the service.
+     - `externalId`: The external identifier for the service. This should be something **unique** and **deterministic** that can identify the specified service from the external data source.
+     - `name`: The name of the service. The name should be unique among the other services with the same `StarlifySystem` as provider.
+     - `providerExternalId`: The external identifier of the service's provider. This should be the externalId of the `StarlifySystem` that provides the service.
+     - `description`: A description of the service.
 
-    - Example instantiation:
+   - Example instantiation:
 
-      ```java
-      import com.starlify.connector.model.StarlifyService;
- 
-      // Example instantiation of a StarlifyService
-      StarlifyService service = StarlifyService.builder()
-          .externalId("exampleServiceExternalId")
-          .name("Example Service")
-          .providerExternalId("exampleExternalSystemIdentifier")
-          .description("Example service description")
-          .build();
-      ```
+     ```java
+     import com.starlify.connector.model.StarlifyService;
+
+     // Example instantiation of a StarlifyService
+     StarlifyService service = StarlifyService.builder()
+         .externalId("exampleServiceExternalId")
+         .name("Example Service")
+         .providerExternalId("exampleExternalSystemIdentifier")
+         .description("Example service description")
+         .build();
+     ```
 
 4. **`StarlifyReference`**
 
-    - Description: This model represents a reference in Starlify.
-    - Usage: The `StarlifyReference` model is used to create references with the following attributes:
+   - Description: This model represents a reference in Starlify.
+   - Usage: The `StarlifyReference` model is used to create references with the following attributes:
 
-        - `externalId`: The external identifier for the reference. This should be something **unique** and **deterministic** that can identify the specified reference from the external data source.
-        - `name`: The name of the reference. The name should be unique among the other references with the same `StarlifySystem` as source.
-        - `sourceExternalId`: The external identifier of the reference's source. This should be the externalId of the `StarlifySystem` that is the source of the reference.
-        - `target`: The `StarlifyService` that the reference targets. The target is identified by an `Identifiable` with the same externalId as the `StarlifyService` the reference should target.
-        - `description`: A description of the reference.
+     - `externalId`: The external identifier for the reference. This should be something **unique** and **deterministic** that can identify the specified reference from the external data source.
+     - `name`: The name of the reference. The name should be unique among the other references with the same `StarlifySystem` as source.
+     - `sourceExternalId`: The external identifier of the reference's source. This should be the externalId of the `StarlifySystem` that is the source of the reference.
+     - `target`: The `StarlifyService` that the reference targets. The target is identified by an `Identifiable` with the same externalId as the `StarlifyService` the reference should target.
+     - `description`: A description of the reference.
 
-    - Example instantiation:
+   - Example instantiation:
 
-      ```java
-      import com.starlify.connector.model.Identifiable;
-      import com.starlify.connector.model.StarlifyReference;
- 
-      // Example instantiation of a StarlifyReference
-      StarlifyReference reference = StarlifyReference.builder()
-          .externalId("exampleReferenceExternalId")
-          .name("Example Reference")
-          .sourceExternalId("exampleExternalSystemIdentifier")
-          .target(Identifiable.builder().externalId("anotherExampleServiceExternalId").build())
-          .description("Example description")
-          .build();
-      ```
+     ```java
+     import com.starlify.connector.model.Identifiable;
+     import com.starlify.connector.model.StarlifyReference;
 
+     // Example instantiation of a StarlifyReference
+     StarlifyReference reference = StarlifyReference.builder()
+         .externalId("exampleReferenceExternalId")
+         .name("Example Reference")
+         .sourceExternalId("exampleExternalSystemIdentifier")
+         .target(Identifiable.builder().externalId("anotherExampleServiceExternalId").build())
+         .description("Example description")
+         .build();
+     ```
 
 ## Configuration
-
 Configuration options for the connector are specified in the `application.yaml` file in the `src/main/resources` directory. You will need to provide your Starlify API key in this file, which you can get under 'External Connections' in Starlify.
 
 The `application.yaml` file contains the following properties:
