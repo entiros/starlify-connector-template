@@ -124,17 +124,59 @@ Unacceptable external IDs could for example be a name that is not unique, a name
 ## Configuration
 Configuration options for the connector are specified in the `application.yaml` file in the `src/main/resources` directory. You will need to provide your Starlify API key in this file, which you can get under 'External Connections' in Starlify.
 
-## Installation
-To install the project with the included Maven wrapper, follow these steps:
+The `application.yaml` file contains the following properties:
 
-1. Clone the repository: `git clone https://github.com/entiros/starlify-connector.git`
-2. Follow the instructions described in the Installation and Configuration sections.
-3. In the project directory, run the Maven Wrapper script:
+```yaml
+starlify-api:
+  api-key: INSERT_API_KEY_HERE
+  testing: false
+  
+server:
+  port: 8080
+```
 
-   - On Unix/Mac OS: `./mvnw clean install`
-   - On Windows: `mvnw.cmd clean install`
-
-   Or, if you have Maven installed, you can run: `mvn clean install`
+- `starlify-api.api-key`: The API key for the connector. This key is used to authenticate the connector with Starlify. You can get the API key from the 'External Connections' page in Starlify when you create a new connection.
+- `starlify-api.testing`: A boolean value that determines whether the connector is running in test mode. If this value is set to `true`, the connector will not connect to Starlify, and the connector will not require an API key. See more information about test mode [below](#test-mode).
+- `server.port`: The port that the connector will listen on. This value can be changed if port 8080 is already in use.
 
 ## Usage
-To use a custom connector in Starlify you will have to follow these steps:
+To start using a custom connector in Starlify you will have to follow these steps:
+
+### Prepare the connector
+1. Clone the connector template repository: `git clone https://github.com/entiros/starlify-connector-skeleton.git`
+2. Implement the methods in the StarlifyConnectorPluginImpl class to retrieve systems, services and references from your data source.
+3. Build the project, either using maven: `mvn clean install`.
+   - If you have maven installed: `mvn clean install`
+   - If you don't have maven installed, you can use the Maven Wrapper script:
+     - On Unix/Mac OS: `./mvnw clean install`
+     - On Windows: `mvnw.cmd clean install`
+
+### Create an external connections in Starlify
+1. In Starlify, go to the `External Connections` page.
+2. Click `Create external connection`.
+3. When prompted to select connector type, choose `Custom connector`.
+4. Type in a name (required) and a description (optional) for the connector.
+5. Type in the URL of the connector (required). This is the URL of the connector's endpoint. If you are running the connector locally, the URL will be `http://localhost:8080/`.
+6. Click the 'next' arrow. The connection will be created. In the next tab you will see the connector information and the API key. Copy the API key and store it somewhere safe, you will not be able to see it again once you close the window.
+7. In your connector's `src/resources/application.yaml` file, replace the `starlify-api.api-key` value with the API key you just copied.
+8. Start the connector by running `mvn spring-boot:run` in the project directory.
+9. In Starlify, click `Verify` to ensure that your connector is set up correctly. 
+
+### Import data from the connector to Starlify
+1. In Starlify, go to the `External Connections` page.
+2. In the list of Agents, select the connector you want to import data from.
+3. Select the network that the data should be imported into.
+4. Click `Sync import`. Starlify will call the connector to start the import process. The connector will extract data from the external data source and send the data to Starlify.
+5. Click the refresh button in the `Import history` to see the status of import jobs.
+6. If any errors occur during the import, check the connector's logs for more information.
+
+## Building and testing your connector
+
+### Test mode
+When you are building the connector and implementing the required methods, you may not want to connect the connector to Starlify from the beginning. For this purpose, the connector may be started in test mode. There are three ways to start the connector in test mode. Any of these ways will ensure the connector starts in test mode:
+1. Keep the value starlify-api.api-key in the `application.yaml` file set to `INSERT_API_KEY_HERE.
+2. Remove the starlify-api.api-key value from the `application.yaml` file.
+3. Add the property starlify-api.testing with the value set to `true` in the `application.yaml` file.
+
+When the connector is started in test mode, it will not connect to Starlify, and the connector will not require an API key. This allows you to test the connector without connecting it to Starlify.
+When the import endpoint is called, the connector will log the data that would have been sent to Starlify if the connector was connected to Starlify. This allows you to verify that the connector es extracting data from the external data source correctly, and that the data is being converted to StarlifySystems, StarlifyServices and StarlifyReferences correctly.
