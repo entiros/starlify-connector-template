@@ -1,2 +1,6 @@
 starlify-api:
   api-key: INSERT_API_KEY
+  testing: false
+
+server:
+  port: 8080
