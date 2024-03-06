@@ -10,7 +10,7 @@ To start using a custom connector in Starlify you will have to follow these step
 
 ### Prepare the connector
 
-1. Clone the connector template repository: `git clone https://github.com/entiros/starlify-connector-skeleton.git`
+1. Clone the connector template repository: `git clone https://github.com/entiros/starlify-connector-template.git`
 2. Implement the methods in the StarlifyConnectorPluginImpl class to retrieve systems, services and references from your data source. See the [Building and testing your connector](#building-and-testing-your-connector) section for more information.
 3. Build the project, either using maven: `mvn clean install`.
    - If you have maven installed: `mvn clean install`
@@ -183,5 +183,8 @@ server:
 ### Explanation of properties
 
 - `starlify-api.api-key`: The API key for the connector. This key is used to authenticate the connector with Starlify. You can get the API key from the 'External Connections' page in Starlify when you create a new connection.
-- `starlify-api.testing`: A boolean value that determines whether the connector is running in test mode. If this value is set to `true`, the connector will not connect to Starlify, and the connector will not require an API key. See more information about test mode [above](#test-mode).
+  <<<<<<< HEAD
+- # `starlify-api.testing`: A boolean value that determines whether the connector is running in test mode. If this value is set to `true`, the connector will not connect to Starlify, and the connector will not require an API key. See more information about test mode [above](#test-mode).
+- `starlify-api.testing`: A boolean value that determines whether the connector is running in test mode. If this value is set to `true`, the connector will not connect to Starlify, and the connector will not require an API key. See more information about test mode [below](#test-mode).
+  > > > > > > > 69814c025d6b886d9e70abc5c6e26adb17befd25
 - `server.port`: The port that the connector will listen on. This value can be changed if port 8080 is already in use.
