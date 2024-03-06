@@ -9,11 +9,11 @@
     <version>3.2.2</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
-  <groupId>com.starlify</groupId>
-  <artifactId>spoof-connector</artifactId>
+  <groupId>com.example</groupId>
+  <artifactId>starlify-connector-template</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>spoof-connector</name>
-  <description>spoof-connector</description>
+  <name>Starlify Connector Template</name>
+  <description>Starlify Connector Template</description>
   <properties>
     <java.version>21</java.version>
   </properties>
