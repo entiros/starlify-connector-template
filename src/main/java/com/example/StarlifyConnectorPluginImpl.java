@@ -1,4 +1,4 @@
-package se.entiros.starlify.connector;
+package com.example;
 
 import com.starlify.connector.interfaces.StarlifyConnectorPlugin;
 import com.starlify.connector.model.StarlifyReference;
