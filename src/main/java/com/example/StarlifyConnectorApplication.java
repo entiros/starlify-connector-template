@@ -1,4 +1,4 @@
-package se.entiros.starlify.connector;
+package com.example;
 
 import com.starlify.connector.EnableStarlifyConnector;
 import org.springframework.boot.SpringApplication;
