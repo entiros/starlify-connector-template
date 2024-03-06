@@ -26,15 +26,15 @@ The `StarlifySystem`, `StarlifyService` and `StarlifyReference` classes are prov
 1. **`Identifiable`**
 
    - Description: This class represents an identifiable entity in the Starlify connector.
-   - Usage: The `Identifiable` class is used to create objects with a unique external identifier. It should only be used in specific cases where the type of the object is not known. For example, it can be used as a target in a `StarlifyReference` object, where the target could be either a `StarlifyService` or a `StarlifyEndpoint`. 
+   - Usage: The `Identifiable` class is used to create objects with a unique external identifier. It should be used in specific cases where the type of the object is not known. For example, it can be used as a target in a `StarlifyReference` object, where the target could be either a `StarlifyService` or a `StarlifyEndpoint`. 
 
-   - Example Implementation:
+   - Example instantiation:
 
      ```java
      import com.starlify.connector.model.Identifiable;
 
      // Example instantiation of Identifiable
-     Identifiable identifiable = Identifieble.builder()
+     Identifiable identifiable = Identifiable.builder()
          .externalId("exampleExternalId")
          .build();
      ```
@@ -111,15 +111,20 @@ The `StarlifySystem`, `StarlifyService` and `StarlifyReference` classes are prov
          .description("Example description")
          .build();
      ```
-     
+
 ## External IDs
+Importing entities from an external data source into Starlify relies on the concept of *external IDs*. Every external node that is to be entered into Starlify must have an external ID. This ID is used to identify the node from the external data source and is used to match the node in the external data source with the node in Starlify. The external ID must be unique within the workspace, and it must be deterministic for a specific node, meaning every time that node is imported, the external ID must be the same as the previous time. If an import enters a node with an external ID that already exists in the workspace, the node will be updated with the new data. If the external ID does not exist in the workspace, a new node will be created.
+
+### Acceptable external IDs
+Acceptable external IDs could for example be unique IDs associated with the node in the external data source, such as a database ID, a UUID identifier, or a unique name that will not change.
+
+### Unacceptable external IDs
+Unacceptable external IDs could for example be a name that is not unique, a name that can change, or a name that is not deterministic, such as a UUID generated during the import process.
 
 ## Configuration
-
 Configuration options for the connector are specified in the `application.yaml` file in the `src/main/resources` directory. You will need to provide your Starlify API key in this file, which you can get under 'External Connections' in Starlify.
 
 ## Installation
-
 To install the project with the included Maven wrapper, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/entiros/starlify-connector.git`
@@ -132,5 +137,4 @@ To install the project with the included Maven wrapper, follow these steps:
    Or, if you have Maven installed, you can run: `mvn clean install`
 
 ## Usage
-
 To use a custom connector in Starlify you will have to follow these steps:
