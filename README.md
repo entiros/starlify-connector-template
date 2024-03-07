@@ -3,7 +3,7 @@
 ## Description
 This is a template project for building your own custom Starlify connector. 
 
-A Starlify Connector is a Spring Boot server application that exposes HTTP endpoints that can be used to trigger data synchronization between Starlify (www.starlify.com) and external data sources. It starts an import job when an HTTP endpoint is called with an API key and a network ID, whereupon it imports systems, services and references from an external data source which exposes this data via the implementation of the StarlifyConnectorPlugin interface.
+A Starlify Connector is a Spring Boot server application that exposes HTTP endpoints that can be used to trigger data synchronization from external data sources to Starlify (www.starlify.com). It starts an import job when an HTTP endpoint is called with an API key and a network ID, whereupon it imports systems, services and references from an external data source which exposes this data via the implementation of the StarlifyConnectorPlugin interface.
 
 It requires Java 21.
 
@@ -19,7 +19,7 @@ To start using a custom connector in Starlify you will have to follow these step
    - If you don't have maven installed, you can use the Maven Wrapper script:
      - On Unix/Mac OS: `./mvnw clean install`
      - On Windows: `mvnw.cmd clean install`
-4. Start the connector by running `mvn spring-boot:run` in the project directory.
+4. Start the connector by running `mvn spring-boot:run` in the project directory. If you don't have maven installed, you can use mvnw as described in the previous step.
 
 ### Create an external connection in Starlify
 
@@ -44,7 +44,11 @@ To start using a custom connector in Starlify you will have to follow these step
 6. If any errors occur during the import, check the connector's logs for more information.
 
 #### Trigger import manually
-TODO manual instructions
+It is also possible to trigger the import manually by calling the import endpoint. This can be done for example using Postman or curl. Depending on your needs, you may also want to set up something that calls the import repeatedly with a given interval to sync data regularly. 
+
+To trigger the endpoint, make a POST request to the URL [[locationOfServer:port]/connector/networks/{networkId}/import](#), where the networkId needs to be replaced with the UUID of the network you want to import data to. This can be found in the network's details pane in Starlify. A header "X-API-KEY" is also needed, with the value set to the API key you got when setting up the connector in Starlify.
+
+Note that if you want to trigger the import when the connector is in [test mode](#test-mode), the endpoint is the same, but the networkId can be any valid UUID, and the X-API-KEY header can be empty.
 
 ## Building and testing your connector
 This template uses the Starlify Connector SDK as a dependency. The SDK provides all the basic essentials for building a custom connector. It sets up a server with an endpoint that will listen for REST calls from Starlify. This endpoint will then call methods in the connector to get systems, services and references. These methods are defined in the StarlifyConnectorPlugin interface, and an implementation of them must be added to the StarlifyConnectorPluginImpl class. The class is already created in the template, but the three methods have placeholder code that should be replaced with your code. Your code should fetch the systems, services and references from your data source and return them as lists of StarlifySystem, StarlifyService and StarlifyReference objects.
@@ -79,7 +83,7 @@ When you are building the connector and implementing the required methods, you m
 - Remove the starlify-api.api-key value from the `application.yaml` file.
 - Add the property starlify-api.testing with the value set to `true` in the `application.yaml` file.
 
-When the connector is started in test mode, it will not connect to Starlify, and the connector will not reqbent to Starlify. This allows you to verify that the connector is extracting data from the external data source correctly, and that the data is being converted to StarlifySystems, StarlifyServices and StarlifyReferences correctly. To call the connector you can use for example Postman with a POST request to the URL <locationOfServer:port>/connector/networks/{networkId}/import, where the networkId needs to be replaced with a valid UUID, for example 853c2d40-e738-4196-a199-33f2c6225fa0. A header "X-API-KEY" is also needed, the value can empty.
+When the connector is started in test mode, it will not connect to Starlify, and the connector will not reqbent to Starlify. This allows you to verify that the connector is extracting data from the external data source correctly, and that the data is being converted to StarlifySystems, StarlifyServices and StarlifyReferences correctly. To call the connector you can use for example Postman with a POST request to the URL [[locationOfServer:port]/connector/networks/{networkId}/import](#), where the networkId needs to be replaced with any valid UUID, for example 853c2d40-e738-4196-a199-33f2c6225fa0. A header "X-API-KEY" is also needed, but the value can empty.
 
 ### Models
 
@@ -106,7 +110,7 @@ When the connector is started in test mode, it will not connect to Starlify, and
 
      - `externalId`: The external identifier for the system. This should be something **unique** and **deterministic** that can identify the specified system from the external data source.
      - `name`: The name of the system. The name should be unique among the other systems in a network.
-     - `description`: A description of the system.
+     - `description`: A description of the system (optional).
 
    - Example instantiation:
 
@@ -129,7 +133,7 @@ When the connector is started in test mode, it will not connect to Starlify, and
      - `externalId`: The external identifier for the service. This should be something **unique** and **deterministic** that can identify the specified service from the external data source.
      - `name`: The name of the service. The name should be unique among the other services with the same `StarlifySystem` as provider.
      - `providerExternalId`: The external identifier of the service's provider. This should be the externalId of the `StarlifySystem` that provides the service.
-     - `description`: A description of the service.
+     - `description`: A description of the service (optional).
 
    - Example instantiation:
 
@@ -154,7 +158,7 @@ When the connector is started in test mode, it will not connect to Starlify, and
      - `name`: The name of the reference. The name should be unique among the other references with the same `StarlifySystem` as source.
      - `sourceExternalId`: The external identifier of the reference's source. This should be the externalId of the `StarlifySystem` that is the source of the reference.
      - `target`: The `StarlifyService` that the reference targets. The target is identified by an `Identifiable` with the same externalId as the `StarlifyService` the reference should target.
-     - `description`: A description of the reference.
+     - `description`: A description of the reference (optional).
 
    - Example instantiation:
 
@@ -188,5 +192,5 @@ server:
 
 ### Explanation of properties
 - `starlify-api.api-key`: The API key for the connector. This key is used to authenticate the connector with Starlify. You can get the API key from the 'External Connections' page in Starlify when you create a new connection.
-- `starlify-api.testing`: A boolean value that determines whether the connector is running in test mode. If this value is set to `true`, the connector will not connect to Starlify, and the connector will not require an API key. See more information about test mode [below](#test-mode).
+- `starlify-api.testing`: A boolean value that determines whether the connector is running in test mode. If this value is set to `true`, the connector will not connect to Starlify, and the connector will not require an API key. See more information about this in the [test mode](#test-mode) section.
 - `server.port`: The port that the connector will listen on. This value can be changed if port 8080 is already in use.
