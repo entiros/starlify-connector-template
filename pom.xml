@@ -11,7 +11,7 @@
   </parent>
   <groupId>com.example</groupId>
   <artifactId>starlify-connector-template</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0</version>
   <name>Starlify Connector Template</name>
   <description>Starlify Connector Template</description>
   <properties>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>com.starlify</groupId>
       <artifactId>connector-sdk</artifactId>
-      <version>0.0.1-BETA3</version>
+      <version>0.1.0</version>
     </dependency>
   </dependencies>
 
