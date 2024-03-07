@@ -144,7 +144,7 @@ When the connector is started in test mode, it will not connect to Starlify, and
      StarlifyService service = StarlifyService.builder()
          .externalId("exampleServiceExternalId")
          .name("Example Service")
-         .providerExternalId("exampleExternalSystemIdentifier")
+         .providerExternalId("exampleExternalSystemId")
          .description("Example service description")
          .build();
      ```
@@ -170,7 +170,7 @@ When the connector is started in test mode, it will not connect to Starlify, and
      StarlifyReference reference = StarlifyReference.builder()
          .externalId("exampleReferenceExternalId")
          .name("Example Reference")
-         .sourceExternalId("exampleExternalSystemIdentifier")
+         .sourceExternalId("exampleExternalSystemId")
          .target(Identifiable.builder().externalId("anotherExampleServiceExternalId").build())
          .description("Example description")
          .build();
