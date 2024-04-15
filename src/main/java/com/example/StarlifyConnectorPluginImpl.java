@@ -17,6 +17,7 @@ public class StarlifyConnectorPluginImpl implements StarlifyConnectorPlugin {
     // Fetch systems from the data source.
     // Build StarlifySystem objects. Each StarlifySystem must have an externalId and a name.
     // A StarlifySystem can also have a description.
+    // If this system is a subsystem, it can have a parentExternalId mapping to the parent system
     // All the StarlifySystem objects must be returned in a list.
     throw new UnsupportedOperationException("Unimplemented method 'getSystems'");
   }
