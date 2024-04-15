@@ -111,6 +111,7 @@ When the connector is started in test mode, it will not connect to Starlify, and
      - `externalId`: The external identifier for the system. This should be something **unique** and **deterministic** that can identify the specified system from the external data source.
      - `name`: The name of the system. The name should be unique among the other systems in a network.
      - `description`: A description of the system (optional).
+     - `parentExternalId`: The externalId of a parent system if this system is actually a subsystem (optional).  
 
    - Example instantiation:
 
